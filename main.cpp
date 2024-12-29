@@ -104,6 +104,77 @@ public:
     }
     cout << endl;
   }
+
+  void removeSong(string name) {
+    Node *temp = head;
+    while (temp != NULL) {
+      if (temp->songName == name) {
+        if (temp->prev != NULL)
+          temp->prev->next = temp->next;
+        else
+          head = temp->next;
+
+        if (temp->next != NULL)
+          temp->next->prev = temp->prev;
+
+        delete temp;
+        cout << "Song '" << name << "' removed from the playlist." << endl;
+        return;
+      }
+      temp = temp->next;
+    }
+    cout << "Song not found: " << name << endl;
+  }
+
+  int getPlaylistLength() {
+    int count = 0;
+    Node *temp = head;
+    while (temp != NULL) {
+      count++;
+      temp = temp->next;
+    }
+    return count;
+  }
+
+  void reversePlaylist() {
+    Node *current = head;
+    Node *temp = NULL;
+    while (current != NULL) {
+      temp = current->prev;
+      current->prev = current->next;
+      current->next = temp;
+      current = current->prev;
+    }
+    if (temp != NULL)
+      head = temp->prev;
+  }
+
+  void searchSong(string name) {
+    Node *temp = head;
+    int position = 0;
+    while (temp != NULL) {
+      if (temp->songName == name) {
+        cout << "Song found: " << name << " at position " << position << endl;
+        return;
+      }
+      temp = temp->next;
+      position++;
+    }
+    cout << "Song not found: " << name << endl;
+  }
+
+  void playSong(string name) {
+    Node *temp = head;
+    while (temp != NULL) {
+      if (temp->songName == name) {
+        cout << "Playing: " << name << endl;
+        history.push(name);
+        return;
+      }
+      temp = temp->next;
+    }
+    cout << "Song not found: " << name << endl;
+  }
 };
 
 
@@ -116,10 +187,29 @@ int main() {
   playlist.addFromTheEnd("Song D");
   playlist.ShowPlaylist();
 
+  cout << "Deleting from the beginning:" << endl;
   playlist.deleteFromTheBeginning();
+  playlist.ShowPlaylist();
+
+  cout << "Deleting from the end:" << endl;
   playlist.deleteFromTheEnd();
   playlist.ShowPlaylist();
 
+  cout << "Reversing playlist:" << endl;
+  playlist.reversePlaylist();
+  playlist.ShowPlaylist();
+
+  cout << "Searching for 'Song B':" << endl;
+  playlist.searchSong("Song B");
+
+  cout << "Playing 'Song B':" << endl;
+  playlist.playSong("Song B");
+
+  cout << "Removing 'Song C':" << endl;
+  playlist.removeSong("Song C");
+  playlist.ShowPlaylist();
+
+  cout << "Playlist length: " << playlist.getPlaylistLength() << endl;
 
   return 0;
 }
